@@ -1,0 +1,17 @@
+{
+  "name": "criptad20",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Virtual Tabletop desktop open-source para RPG de mesa.",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0",
+    "typescript": "^5.9.0"
+  },
+  "packageManager": "pnpm@10.25.0"
+}
