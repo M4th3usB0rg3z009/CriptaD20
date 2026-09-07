@@ -17,6 +17,7 @@ model User {
 
   ownedCampaigns Campaign[]       @relation("CampaignOwner")
   memberships    CampaignMember[]
+  invites CampaignInvite[]
 
   @@map("users")
 }
@@ -31,6 +32,7 @@ model Campaign {
 
   owner   User             @relation("CampaignOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   members CampaignMember[]
+  invites CampaignInvite[]
 
   @@index([ownerId])
   @@map("campaigns")
@@ -54,4 +56,26 @@ model CampaignMember {
 enum CampaignRole {
   GM
   PLAYER
+}
+
+model CampaignInvite {
+  id         String       @id @default(uuid())
+  campaignId String
+  userId     String
+  status     InviteStatus @default(PENDING)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, userId])
+  @@index([userId])
+  @@map("campaign_invites")
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
 }
