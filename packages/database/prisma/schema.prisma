@@ -15,5 +15,43 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  ownedCampaigns Campaign[]       @relation("CampaignOwner")
+  memberships    CampaignMember[]
+
   @@map("users")
+}
+
+model Campaign {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner   User             @relation("CampaignOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members CampaignMember[]
+
+  @@index([ownerId])
+  @@map("campaigns")
+}
+
+model CampaignMember {
+  id         String       @id @default(uuid())
+  campaignId String
+  userId     String
+  role       CampaignRole @default(PLAYER)
+  joinedAt   DateTime     @default(now())
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, userId])
+  @@index([userId])
+  @@map("campaign_members")
+}
+
+enum CampaignRole {
+  GM
+  PLAYER
 }
