@@ -37,3 +37,6 @@ Thumbs.db
 
 # Electron
 release/
+
+# TypeScript build cache
+*.tsbuildinfo

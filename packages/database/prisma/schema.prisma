@@ -33,6 +33,7 @@ model Campaign {
   owner   User             @relation("CampaignOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   members CampaignMember[]
   invites CampaignInvite[]
+  sessions Session[]
 
   @@index([ownerId])
   @@map("campaigns")
@@ -78,4 +79,26 @@ enum InviteStatus {
   PENDING
   ACCEPTED
   DECLINED
+}
+
+model Session {
+  id          String        @id @default(uuid())
+  name        String
+  description String?
+  scheduledAt DateTime?
+  status      SessionStatus @default(PLANNED)
+  campaignId  String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@map("sessions")
+}
+
+enum SessionStatus {
+  PLANNED
+  ACTIVE
+  FINISHED
 }
