@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { CampaignsModule } from './campaigns/campaigns.module';
 import { SessionsModule } from './sessions/sessions.module';
+import { CharactersModule } from './characters/characters.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { SessionsModule } from './sessions/sessions.module';
     AuthModule,
     CampaignsModule,
     SessionsModule,
+    CharactersModule,
   ],
   controllers: [AppController],
   providers: [],

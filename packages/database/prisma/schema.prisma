@@ -18,6 +18,7 @@ model User {
   ownedCampaigns Campaign[]       @relation("CampaignOwner")
   memberships    CampaignMember[]
   invites CampaignInvite[]
+  characters Character[]
 
   @@map("users")
 }
@@ -30,10 +31,11 @@ model Campaign {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  owner   User             @relation("CampaignOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  members CampaignMember[]
-  invites CampaignInvite[]
-  sessions Session[]
+  owner      User             @relation("CampaignOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members    CampaignMember[]
+  invites    CampaignInvite[]
+  sessions   Session[]
+  characters Character[]
 
   @@index([ownerId])
   @@map("campaigns")
@@ -101,4 +103,23 @@ enum SessionStatus {
   PLANNED
   ACTIVE
   FINISHED
+}
+
+model Character {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  avatarUrl   String?
+  sheetData   Json?
+  campaignId  String
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  owner    User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@index([ownerId])
+  @@map("characters")
 }
