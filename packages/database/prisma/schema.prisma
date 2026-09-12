@@ -19,6 +19,7 @@ model User {
   memberships    CampaignMember[]
   invites CampaignInvite[]
   characters Character[]
+  createdSheetTemplates CharacterSheetTemplate[]
 
   @@map("users")
 }
@@ -36,6 +37,7 @@ model Campaign {
   invites    CampaignInvite[]
   sessions   Session[]
   characters Character[]
+  sheetTemplates CharacterSheetTemplate[]
 
   @@index([ownerId])
   @@map("campaigns")
@@ -118,8 +120,43 @@ model Character {
 
   campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   owner    User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  sheet CharacterSheet?
 
   @@index([campaignId])
   @@index([ownerId])
   @@map("characters")
+}
+
+model CharacterSheetTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  definition  Json
+  campaignId  String
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  campaign  Campaign         @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  createdBy User             @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  sheets    CharacterSheet[]
+
+  @@index([campaignId])
+  @@index([createdById])
+  @@map("character_sheet_templates")
+}
+
+model CharacterSheet {
+  id          String   @id @default(uuid())
+  characterId String   @unique
+  templateId  String
+  data        Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  character Character              @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  template  CharacterSheetTemplate @relation(fields: [templateId], references: [id], onDelete: Restrict)
+
+  @@index([templateId])
+  @@map("character_sheets")
 }
