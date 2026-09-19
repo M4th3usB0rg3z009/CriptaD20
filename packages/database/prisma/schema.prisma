@@ -8,7 +8,7 @@ datasource db {
 
 model User {
   id        String   @id @default(uuid())
-  username  String   @unique
+  username  String   @unique 
   email     String   @unique
   password  String
   avatarUrl String?
@@ -20,6 +20,7 @@ model User {
   invites CampaignInvite[]
   characters Character[]
   createdSheetTemplates CharacterSheetTemplate[]
+  diceRolls DiceRoll[]
 
   @@map("users")
 }
@@ -96,6 +97,7 @@ model Session {
   updatedAt   DateTime      @updatedAt
 
   campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  diceRolls DiceRoll[]
 
   @@index([campaignId])
   @@map("sessions")
@@ -117,6 +119,7 @@ model Character {
   ownerId     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  diceRolls DiceRoll[]
 
   campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   owner    User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
@@ -159,4 +162,28 @@ model CharacterSheet {
 
   @@index([templateId])
   @@map("character_sheets")
+}
+
+model DiceRoll {
+  id         String   @id @default(uuid())
+  expression String
+  dice       Json
+  modifier   Int
+  total      Int
+  mode       String   @default("normal")
+  isCritical Boolean  @default(false)
+  isFumble   Boolean  @default(false)
+  sessionId  String
+  userId     String
+  createdAt  DateTime @default(now())
+  characterId String?
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  character   Character? @relation(fields: [characterId], references: [id], onDelete: SetNull)
+
+  @@index([sessionId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("dice_rolls")
 }

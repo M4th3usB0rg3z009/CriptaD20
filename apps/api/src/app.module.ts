@@ -6,6 +6,7 @@ import { CampaignsModule } from './campaigns/campaigns.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { CharactersModule } from './characters/characters.module';
 import { CharacterSheetsModule } from './character-sheets/character-sheets.module';
+import { DiceModule } from './dice/dice.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CharacterSheetsModule } from './character-sheets/character-sheets.modul
     SessionsModule,
     CharactersModule,
     CharacterSheetsModule,
+    DiceModule,
   ],
   controllers: [AppController],
   providers: [],
